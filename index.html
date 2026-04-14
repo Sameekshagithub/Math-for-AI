@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math for AI Engineers — Sameeksha</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --dark-navy: #0a1628;
+    --deep-blue: #0d2144;
+    --mid-blue: #1a3a6b;
+    --accent-blue: #1e4fa0;
+    --bright-blue: #2563c8;
+    --highlight: #3b82f6;
+    --pale-blue: #dbeafe;
+    --light-bg: #f0f6ff;
+    --border: #bfdbfe;
+    --text-dark: #0a1628;
+    --text-mid: #1e3a5f;
+    --text-light: #4a6fa5;
+    --code-bg: #eef4ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-dark);
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--dark-navy);
+    color: #fff;
+    padding: 60px 0 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(37,99,200,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -40px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-label {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--highlight);
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #fff;
+    position: relative; z-index: 1;
+  }
+  header h1 span {
+    color: var(--highlight);
+  }
+  .header-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 10px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    position: relative; z-index: 1;
+  }
+  .author-chip {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 7px 20px;
+    background: rgba(37,99,200,0.25);
+    border: 1px solid rgba(59,130,246,0.5);
+    border-radius: 50px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12px;
+    color: #93c5fd;
+    letter-spacing: 1px;
+    position: relative; z-index: 1;
+  }
+
+  /* TOC */
+  .toc-wrapper {
+    background: var(--light-bg);
+    border-bottom: 2px solid var(--border);
+    padding: 36px 0;
+  }
+  .toc-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+  .toc-title {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 16px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--mid-blue);
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .toc-item:hover {
+    background: var(--accent-blue);
+    color: #fff;
+    border-color: var(--accent-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(30,79,160,0.18);
+  }
+  .toc-num {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10px;
+    color: var(--highlight);
+    min-width: 22px;
+  }
+  .toc-item:hover .toc-num { color: rgba(255,255,255,0.7); }
+
+  /* MAIN */
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px 30px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 60px;
+    border-left: 4px solid var(--accent-blue);
+    padding-left: 28px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .section-num {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-light);
+    background: var(--pale-blue);
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark-navy);
+    letter-spacing: -0.3px;
+  }
+
+  /* SUBSECTION */
+  .subsection {
+    background: var(--light-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+  }
+  .subsection h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--deep-blue);
+    margin-bottom: 12px;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 8px;
+  }
+
+  /* DEFINITION / FORMULA BOXES */
+  .def-box {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--bright-blue);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+  .def-box .label {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--bright-blue);
+    margin-bottom: 5px;
+  }
+  .formula-box {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 13.5px;
+    color: var(--deep-blue);
+    font-weight: 600;
+    line-height: 2;
+  }
+  .key-insight {
+    background: var(--deep-blue);
+    color: #e0edff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .key-insight strong { color: #93c5fd; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--accent-blue);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--pale-blue); }
+
+  /* LIST */
+  ul, ol {
+    padding-left: 20px;
+    margin: 8px 0;
+  }
+  li { margin-bottom: 5px; color: var(--text-mid); }
+  li strong { color: var(--dark-navy); }
+
+  /* INLINE CODE */
+  code {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    color: var(--accent-blue);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  p { color: var(--text-mid); margin-bottom: 10px; }
+
+  /* GRID LAYOUT for small subsections */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media(max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark-navy);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 28px;
+    font-size: 12px;
+    font-family: 'Source Code Pro', monospace;
+    letter-spacing: 1px;
+  }
+  footer span { color: var(--highlight); }
+
+  /* PRINT */
+  @media print {
+    body { font-size: 13px; }
+    header { padding: 30px; }
+    .section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-label">Complete Reference Notes</div>
+  <h1>Mathematics for <span>AI Engineers</span></h1>
+  <p class="header-sub">Linear Algebra · Calculus · Probability · Statistics · Optimization · Information Theory</p>
+  <div class="author-chip">✦ Prepared for Sameeksha ✦</div>
+</header>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc-wrapper">
+  <div class="toc-inner">
+    <div class="toc-title">Table of Contents</div>
+    <div class="toc-grid">
+      <a href="#s1" class="toc-item"><span class="toc-num">01</span> Linear Algebra</a>
+      <a href="#s2" class="toc-item"><span class="toc-num">02</span> Calculus & Derivatives</a>
+      <a href="#s3" class="toc-item"><span class="toc-num">03</span> Multivariable Calculus</a>
+      <a href="#s4" class="toc-item"><span class="toc-num">04</span> Probability Theory</a>
+      <a href="#s5" class="toc-item"><span class="toc-num">05</span> Statistics</a>
+      <a href="#s6" class="toc-item"><span class="toc-num">06</span> Optimization</a>
+      <a href="#s7" class="toc-item"><span class="toc-num">07</span> Information Theory</a>
+      <a href="#s8" class="toc-item"><span class="toc-num">08</span> Numerical Methods</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 1: LINEAR ALGEBRA -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Linear Algebra</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Scalars, Vectors, Matrices & Tensors</h3>
+    <div class="two-col">
+      <div class="def-box">
+        <div class="label">Scalar</div>
+        A single number, e.g. <code>x ∈ ℝ</code>. Used for learning rate, loss value, weight.
+      </div>
+      <div class="def-box">
+        <div class="label">Vector</div>
+        An ordered array of numbers: <code>v ∈ ℝⁿ</code>. Represents features or embeddings.
+      </div>
+      <div class="def-box">
+        <div class="label">Matrix</div>
+        2D array: <code>A ∈ ℝᵐˣⁿ</code>. Represents weight layers in neural networks.
+      </div>
+      <div class="def-box">
+        <div class="label">Tensor</div>
+        N-dimensional generalization. Images are rank-3 tensors (H × W × C).
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Vector Operations</h3>
+    <div class="formula-box">
+      Dot Product:   a · b = Σᵢ aᵢbᵢ  = |a||b| cos θ<br>
+      Addition:      c = a + b   →  cᵢ = aᵢ + bᵢ<br>
+      Scalar Mult:   λa  →  (λa)ᵢ = λaᵢ<br>
+      L2 Norm:       ‖x‖₂ = √(Σ xᵢ²)<br>
+      L1 Norm:       ‖x‖₁ = Σ |xᵢ|<br>
+      Cross Product: a × b (3D only)
+    </div>
+    <div class="key-insight"><strong>AI Use:</strong> Cosine similarity = (a·b)/(‖a‖‖b‖) — used in word embeddings, recommendation systems, and semantic search.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Matrix Operations</h3>
+    <div class="formula-box">
+      Matrix Mult:   C = AB,   Cᵢⱼ = Σₖ AᵢₖBₖⱼ<br>
+      Transpose:     (Aᵀ)ᵢⱼ = Aⱼᵢ<br>
+      Inverse:       AA⁻¹ = I  (only for square, non-singular)<br>
+      Hadamard:      (A ⊙ B)ᵢⱼ = AᵢⱼBᵢⱼ  (element-wise)<br>
+      Trace:         tr(A) = Σᵢ Aᵢᵢ<br>
+      Determinant:   det(A) — measures volume scaling
+    </div>
+    <ul>
+      <li><strong>Forward pass</strong> in neural nets: <code>z = Wx + b</code></li>
+      <li><strong>Backprop</strong> uses transposed weight matrices</li>
+      <li><strong>Attention</strong>: <code>Attention(Q,K,V) = softmax(QKᵀ/√d) V</code></li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <h3>Eigenvalues & Eigenvectors</h3>
+    <div class="formula-box">
+      Av = λv<br>
+      Characteristic equation: det(A − λI) = 0<br>
+      Eigendecomposition: A = QΛQ⁻¹<br>
+      Symmetric: A = QΛQᵀ  (Q orthogonal)
+    </div>
+    <div class="key-insight"><strong>PCA</strong> finds eigenvectors of the covariance matrix. Largest eigenvalue → direction of most variance. Used for dimensionality reduction before feeding to ML models.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Singular Value Decomposition (SVD)</h3>
+    <div class="formula-box">
+      A = UΣVᵀ<br>
+      U ∈ ℝᵐˣᵐ (left singular vectors, orthogonal)<br>
+      Σ ∈ ℝᵐˣⁿ (diagonal — singular values σ₁ ≥ σ₂ ≥ ... ≥ 0)<br>
+      Vᵀ ∈ ℝⁿˣⁿ (right singular vectors, orthogonal)<br>
+      Low-rank approx: Aₖ = Σᵢ₌₁ᵏ σᵢ uᵢ vᵢᵀ
+    </div>
+    <div class="key-insight"><strong>Truncated SVD</strong> is used in recommender systems (matrix factorization), NLP (LSA), and data compression. It's the backbone of collaborative filtering.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Special Matrices & Properties</h3>
+    <table>
+      <tr><th>Matrix Type</th><th>Property</th><th>AI Use Case</th></tr>
+      <tr><td>Identity (I)</td><td>Iᵢⱼ = 1 if i=j, else 0</td><td>Residual connections (x + I·x)</td></tr>
+      <tr><td>Diagonal</td><td>Non-zero only on diagonal</td><td>Batch norm scaling</td></tr>
+      <tr><td>Symmetric</td><td>A = Aᵀ</td><td>Covariance, kernel matrices</td></tr>
+      <tr><td>Orthogonal</td><td>AᵀA = I</td><td>Rotation in embeddings</td></tr>
+      <tr><td>Positive Definite</td><td>xᵀAx > 0 ∀x≠0</td><td>Valid covariance, optimization</td></tr>
+      <tr><td>Sparse</td><td>Mostly zeros</td><td>Graph adjacency, one-hot</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 2: CALCULUS -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Calculus & Derivatives</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Limits & Continuity</h3>
+    <div class="formula-box">
+      lim(x→a) f(x) = L<br>
+      f is continuous if: lim(x→a) f(x) = f(a)<br>
+      Differentiability ⟹ Continuity (converse not always true)
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Derivatives — Rules</h3>
+    <div class="formula-box">
+      Power Rule:       d/dx[xⁿ] = nxⁿ⁻¹<br>
+      Product Rule:     d/dx[f·g] = f'g + fg'<br>
+      Quotient Rule:    d/dx[f/g] = (f'g − fg') / g²<br>
+      Chain Rule:       d/dx[f(g(x))] = f'(g(x)) · g'(x)<br>
+      Exponential:      d/dx[eˣ] = eˣ<br>
+      Log:              d/dx[ln x] = 1/x<br>
+      Sigmoid:          σ'(x) = σ(x)(1 − σ(x))<br>
+      Tanh:             tanh'(x) = 1 − tanh²(x)<br>
+      ReLU:             f'(x) = 1 if x > 0, else 0
+    </div>
+    <div class="key-insight"><strong>Chain Rule IS Backpropagation.</strong> Every layer gradient is computed by chaining local derivatives from output to input: <strong>∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂w</strong></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Activation Function Derivatives</h3>
+    <table>
+      <tr><th>Activation</th><th>Formula</th><th>Derivative</th><th>Notes</th></tr>
+      <tr><td>Sigmoid</td><td>1/(1+e⁻ˣ)</td><td>σ(x)(1−σ(x))</td><td>Vanishing gradient for |x|»0</td></tr>
+      <tr><td>Tanh</td><td>(eˣ−e⁻ˣ)/(eˣ+e⁻ˣ)</td><td>1−tanh²(x)</td><td>Zero-centered, still vanishes</td></tr>
+      <tr><td>ReLU</td><td>max(0, x)</td><td>0 or 1</td><td>Fast, dying neuron problem</td></tr>
+      <tr><td>Leaky ReLU</td><td>max(αx, x)</td><td>α or 1</td><td>Fixes dying ReLU</td></tr>
+      <tr><td>GELU</td><td>x·Φ(x)</td><td>Φ(x) + x·φ(x)</td><td>Used in BERT, GPT</td></tr>
+      <tr><td>Softmax</td><td>eˣⁱ/Σeˣʲ</td><td>pᵢ(δᵢⱼ − pⱼ)</td><td>Jacobian matrix</td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>Taylor Series & Approximation</h3>
+    <div class="formula-box">
+      f(x) ≈ f(a) + f'(a)(x−a) + f''(a)(x−a)²/2! + ...<br>
+      eˣ = 1 + x + x²/2! + x³/3! + ...<br>
+      ln(1+x) ≈ x − x²/2 + x³/3 − ... for |x| < 1
+    </div>
+    <div class="key-insight">Taylor expansion justifies <strong>gradient descent</strong>: first-order approximation of the loss landscape. Second-order methods (Newton) use the Hessian (second derivative).</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 3: MULTIVARIABLE CALCULUS -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Multivariable Calculus</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Partial Derivatives & Gradient</h3>
+    <div class="formula-box">
+      Partial: ∂f/∂xᵢ — rate of change w.r.t. xᵢ (others held constant)<br>
+      Gradient: ∇f(x) = [∂f/∂x₁, ∂f/∂x₂, ..., ∂f/∂xₙ]ᵀ<br>
+      Directional Derivative: D_v f = ∇f · v̂<br>
+      ∇f points in direction of steepest ASCENT
+    </div>
+    <div class="key-insight">In gradient descent: <strong>w ← w − η ∇_w L</strong>. We subtract because we want to minimize loss (steepest descent).</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Jacobian Matrix</h3>
+    <div class="formula-box">
+      For f: ℝⁿ → ℝᵐ<br>
+      J ∈ ℝᵐˣⁿ,  Jᵢⱼ = ∂fᵢ/∂xⱼ<br>
+      Backprop = multiplying Jacobians across layers<br>
+      δL/δx = Jᵀ · δL/δf
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Hessian Matrix</h3>
+    <div class="formula-box">
+      H ∈ ℝⁿˣⁿ,   Hᵢⱼ = ∂²f / (∂xᵢ ∂xⱼ)<br>
+      Symmetric if f is twice-differentiable<br>
+      If H is positive definite → local minimum<br>
+      If H is negative definite → local maximum<br>
+      If H has mixed signs → saddle point
+    </div>
+    <div class="key-insight">Saddle points are common in deep learning. SGD with momentum escapes them. The <strong>Hessian eigenspectrum</strong> explains why some directions learn faster than others.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Chain Rule (Vector Form)</h3>
+    <div class="formula-box">
+      ∂L/∂W = ∂L/∂z · ∂z/∂W  (backpropagation in matrix form)<br>
+      For z = Wx + b:<br>
+        ∂L/∂W = δᵀxᵀ  (outer product)<br>
+        ∂L/∂x = Wᵀδ<br>
+        ∂L/∂b = δ
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Integration — Key Results for AI</h3>
+    <div class="formula-box">
+      ∫ p(x) dx = 1  (probability normalization)<br>
+      E[X] = ∫ x p(x) dx<br>
+      Var[X] = ∫ (x − μ)² p(x) dx<br>
+      Gaussian: ∫₋∞^∞ e^(−x²) dx = √π
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 4: PROBABILITY THEORY -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Probability Theory</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Fundamentals</h3>
+    <div class="two-col">
+      <div class="def-box">
+        <div class="label">Sample Space Ω</div>
+        All possible outcomes. E.g., Ω = {H, T} for a coin.
+      </div>
+      <div class="def-box">
+        <div class="label">Event A</div>
+        A subset of Ω. P(A) ∈ [0,1], P(Ω) = 1.
+      </div>
+    </div>
+    <div class="formula-box">
+      Complement:   P(Aᶜ) = 1 − P(A)<br>
+      Union:        P(A∪B) = P(A) + P(B) − P(A∩B)<br>
+      Intersection: P(A∩B) = P(A|B)·P(B) = P(B|A)·P(A)<br>
+      Independence: P(A∩B) = P(A)·P(B)
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Conditional Probability & Bayes' Theorem</h3>
+    <div class="formula-box">
+      P(A|B) = P(A∩B) / P(B)<br>
+      <br>
+      Bayes' Theorem:<br>
+      P(A|B) = P(B|A)·P(A) / P(B)<br>
+      <br>
+      Full form (Law of Total Probability):<br>
+      P(B) = Σₖ P(B|Aₖ)·P(Aₖ)
+    </div>
+    <div class="key-insight"><strong>Posterior = (Likelihood × Prior) / Evidence</strong><br>Core of Bayesian ML, Naive Bayes classifier, and probabilistic graphical models. GPT predicts P(next token | context) — that's conditional probability.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Probability Distributions</h3>
+    <table>
+      <tr><th>Distribution</th><th>PMF / PDF</th><th>Mean</th><th>Variance</th><th>AI Use</th></tr>
+      <tr><td>Bernoulli(p)</td><td>pˣ(1−p)¹⁻ˣ</td><td>p</td><td>p(1−p)</td><td>Binary classification</td></tr>
+      <tr><td>Binomial(n,p)</td><td>C(n,k)pᵏ(1−p)ⁿ⁻ᵏ</td><td>np</td><td>np(1−p)</td><td>Multiple Bernoulli trials</td></tr>
+      <tr><td>Categorical(p)</td><td>∏ pᵢˣⁱ</td><td>—</td><td>—</td><td>Softmax output</td></tr>
+      <tr><td>Gaussian N(μ,σ²)</td><td>(1/σ√2π)e^(−(x−μ)²/2σ²)</td><td>μ</td><td>σ²</td><td>Weight init, VAE</td></tr>
+      <tr><td>Uniform U(a,b)</td><td>1/(b−a)</td><td>(a+b)/2</td><td>(b−a)²/12</td><td>Random init</td></tr>
+      <tr><td>Poisson(λ)</td><td>e^(−λ)λᵏ/k!</td><td>λ</td><td>λ</td><td>Count data</td></tr>
+      <tr><td>Laplace(μ,b)</td><td>(1/2b)e^(−|x−μ|/b)</td><td>μ</td><td>2b²</td><td>L1 regularization prior</td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>Expectation & Variance</h3>
+    <div class="formula-box">
+      E[X] = Σ x·P(X=x)  or  ∫ x·f(x)dx<br>
+      E[aX + b] = aE[X] + b<br>
+      E[X + Y] = E[X] + E[Y]  (linearity, always holds)<br>
+      E[XY] = E[X]E[Y]  (only if independent)<br>
+      <br>
+      Var[X] = E[X²] − (E[X])²<br>
+      Var[aX + b] = a²Var[X]<br>
+      Std Dev: σ = √Var[X]<br>
+      <br>
+      Covariance: Cov(X,Y) = E[(X−μₓ)(Y−μᵧ)]<br>
+      Correlation: ρ = Cov(X,Y) / (σₓσᵧ) ∈ [−1, 1]
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Important Theorems</h3>
+    <div class="def-box">
+      <div class="label">Law of Large Numbers</div>
+      As n→∞, sample mean x̄ → true mean μ. Foundation of Monte Carlo methods.
+    </div>
+    <div class="def-box">
+      <div class="label">Central Limit Theorem</div>
+      Sum of many independent RVs → Normal distribution, regardless of individual distributions. Justifies Gaussian noise assumptions.
+    </div>
+    <div class="def-box">
+      <div class="label">Markov's Inequality</div>
+      P(X ≥ a) ≤ E[X]/a for X ≥ 0. Used in generalization bounds.
+    </div>
+    <div class="def-box">
+      <div class="label">Chebyshev's Inequality</div>
+      P(|X − μ| ≥ kσ) ≤ 1/k². Bounds outlier probability.
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 5: STATISTICS -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Statistics</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Descriptive Statistics</h3>
+    <div class="formula-box">
+      Mean:     μ = (1/n) Σ xᵢ<br>
+      Median:   Middle value when sorted<br>
+      Mode:     Most frequent value<br>
+      Variance: s² = (1/(n−1)) Σ (xᵢ − x̄)²  (sample)<br>
+      Skewness: E[(X−μ)³/σ³]  — asymmetry<br>
+      Kurtosis: E[(X−μ)⁴/σ⁴] − 3  — tail heaviness
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Maximum Likelihood Estimation (MLE)</h3>
+    <div class="formula-box">
+      θ_MLE = argmax_θ P(D|θ) = argmax_θ Σ log P(xᵢ|θ)<br>
+      <br>
+      For Gaussian:  μ_MLE = (1/n)Σxᵢ,  σ²_MLE = (1/n)Σ(xᵢ−μ)²<br>
+      Log-likelihood: ℓ(θ) = Σᵢ log p(xᵢ; θ)
+    </div>
+    <div class="key-insight">Training a neural network by minimizing cross-entropy loss IS doing MLE. The loss function is the negative log-likelihood.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Maximum A Posteriori (MAP)</h3>
+    <div class="formula-box">
+      θ_MAP = argmax_θ P(θ|D) = argmax_θ [log P(D|θ) + log P(θ)]<br>
+      Gaussian prior → L2 regularization (Ridge)<br>
+      Laplace prior  → L1 regularization (Lasso)
+    </div>
+    <div class="key-insight"><strong>Regularization = MAP estimation with a prior on weights.</strong> L2 penalty ‖w‖² comes from a Gaussian prior N(0, σ²).</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Bias-Variance Tradeoff</h3>
+    <div class="formula-box">
+      Expected Error = Bias² + Variance + Irreducible Noise<br>
+      <br>
+      Bias:     Error from wrong model assumptions (underfitting)<br>
+      Variance: Sensitivity to training data fluctuations (overfitting)<br>
+      Noise:    Irreducible error in data
+    </div>
+    <table>
+      <tr><th>Model</th><th>Bias</th><th>Variance</th><th>Solution</th></tr>
+      <tr><td>Too simple</td><td>High</td><td>Low</td><td>More capacity, features</td></tr>
+      <tr><td>Too complex</td><td>Low</td><td>High</td><td>Regularization, more data</td></tr>
+      <tr><td>Optimal</td><td>Low</td><td>Low</td><td>Balanced</td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>Hypothesis Testing & Confidence Intervals</h3>
+    <div class="formula-box">
+      p-value: Probability of observing data as extreme as ours under H₀<br>
+      p < 0.05 → reject null hypothesis<br>
+      <br>
+      95% CI: x̄ ± 1.96 · (σ/√n)<br>
+      t-statistic: t = (x̄ − μ₀) / (s/√n)
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 6: OPTIMIZATION -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>Optimization</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Gradient Descent Variants</h3>
+    <div class="formula-box">
+      Gradient Descent (GD):   w ← w − η ∇_w L(w; D)<br>
+      Stochastic (SGD):        w ← w − η ∇_w L(w; xᵢ,yᵢ)<br>
+      Mini-batch:              w ← w − η ∇_w L(w; B)  |B|≪n<br>
+      <br>
+      SGD with Momentum:       v ← βv + ∇L;  w ← w − ηv<br>
+      Nesterov:                v ← βv + ∇L(w−βv);  w ← w − ηv
+    </div>
+    <div class="key-insight">Momentum accumulates velocity in consistent gradient directions, damping oscillations. β ≈ 0.9 is a typical value. Helps escape local minima and saddle points.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Adaptive Optimizers</h3>
+    <table>
+      <tr><th>Optimizer</th><th>Update Rule (simplified)</th><th>Key Feature</th></tr>
+      <tr><td>AdaGrad</td><td>η/√(Σg²) · g</td><td>Adapts per parameter; LR decays</td></tr>
+      <tr><td>RMSProp</td><td>η/√(Ev[g²]) · g</td><td>Exp. moving avg of squared grad</td></tr>
+      <tr><td>Adam</td><td>m̂/(√v̂ + ε) · η</td><td>Bias-corrected momentum + RMSProp</td></tr>
+      <tr><td>AdamW</td><td>Adam + weight decay</td><td>Decoupled L2 regularization</td></tr>
+      <tr><td>LAMB</td><td>Layerwise adaptive Adam</td><td>Large batch training (BERT)</td></tr>
+    </table>
+    <div class="formula-box">
+      Adam Full:<br>
+      mₜ = β₁mₜ₋₁ + (1−β₁)gₜ         (first moment)<br>
+      vₜ = β₂vₜ₋₁ + (1−β₂)gₜ²        (second moment)<br>
+      m̂ₜ = mₜ/(1−β₁ᵗ)                (bias correction)<br>
+      v̂ₜ = vₜ/(1−β₂ᵗ)                (bias correction)<br>
+      wₜ = wₜ₋₁ − η · m̂ₜ/(√v̂ₜ + ε)
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Learning Rate Schedules</h3>
+    <div class="formula-box">
+      Step decay:      η = η₀ · γ^(epoch/step_size)<br>
+      Exponential:     η = η₀ · e^(−λt)<br>
+      Cosine anneal:   η = η_min + 0.5(η_max − η_min)(1 + cos(πt/T))<br>
+      Warmup:          Linear ramp from 0 → η₀ then decay<br>
+      Cyclical LR:     Triangular oscillation between [η_min, η_max]
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Convexity & Optimality Conditions</h3>
+    <div class="formula-box">
+      Convex function: f(λx + (1−λ)y) ≤ λf(x) + (1−λ)f(y)<br>
+      First-order condition (minimum): ∇f(w*) = 0<br>
+      Second-order (local min): H(w*) is positive semi-definite<br>
+      <br>
+      Lagrangian (constrained): L(w,λ) = f(w) + Σλᵢgᵢ(w)<br>
+      KKT conditions: ∇f + Σλᵢ∇gᵢ = 0,  λᵢ ≥ 0,  λᵢgᵢ = 0
+    </div>
+    <div class="key-insight">Deep learning loss surfaces are <strong>non-convex</strong>. However, over-parameterized networks often have no "bad" local minima — most local minima are near global minima in practice.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Regularization Techniques</h3>
+    <div class="formula-box">
+      L2 (Ridge):  L_reg = L + λ‖w‖₂²     → Gaussian prior<br>
+      L1 (Lasso):  L_reg = L + λ‖w‖₁      → Laplace prior → sparsity<br>
+      Elastic Net: L_reg = L + λ₁‖w‖₁ + λ₂‖w‖₂²<br>
+      Dropout:     Randomly zero p fraction of neurons during training<br>
+      Batch Norm:  ẑ = (z − μ_B)/σ_B · γ + β<br>
+      Early Stop:  Halt when val loss stops improving
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 7: INFORMATION THEORY -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>Information Theory</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Entropy</h3>
+    <div class="formula-box">
+      Shannon Entropy:   H(X) = −Σ p(x) log₂ p(x)  [bits]<br>
+      Nat units:         H(X) = −Σ p(x) ln p(x)     [nats]<br>
+      Maximum entropy:   Uniform distribution → H = log(n)<br>
+      Minimum entropy:   Deterministic → H = 0
+    </div>
+    <div class="key-insight">Entropy measures <strong>uncertainty</strong>. High entropy = more information in knowing the outcome. Used in decision trees (information gain = entropy reduction).</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Cross-Entropy & KL Divergence</h3>
+    <div class="formula-box">
+      Cross-Entropy:  H(p,q) = −Σ p(x) log q(x)<br>
+      KL Divergence:  KL(p‖q) = Σ p(x) log(p(x)/q(x)) ≥ 0<br>
+      Relation:       H(p,q) = H(p) + KL(p‖q)<br>
+      <br>
+      KL(p‖q) ≠ KL(q‖p)  (asymmetric!)<br>
+      KL = 0 iff p = q
+    </div>
+    <div class="key-insight"><strong>Cross-entropy loss for classification:</strong> L = −Σᵢ yᵢ log(ŷᵢ). Minimizing cross-entropy ≡ minimizing KL divergence between true and predicted distributions. It's the backbone of all classifier training.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Mutual Information</h3>
+    <div class="formula-box">
+      I(X;Y) = KL(p(x,y) ‖ p(x)p(y))<br>
+             = H(X) − H(X|Y) = H(Y) − H(Y|X)<br>
+             = H(X) + H(Y) − H(X,Y)<br>
+      I(X;Y) ≥ 0,  I(X;Y) = 0 iff X,Y independent
+    </div>
+    <div class="key-insight">Mutual information measures <strong>how much X tells us about Y</strong>. Used in feature selection, contrastive learning (maximizing MI between views), and variational autoencoders.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>Loss Functions & Their Information-Theoretic Basis</h3>
+    <table>
+      <tr><th>Loss</th><th>Formula</th><th>Use Case</th><th>Basis</th></tr>
+      <tr><td>Binary CE</td><td>−[y log ŷ + (1−y) log(1−ŷ)]</td><td>Binary classif.</td><td>MLE Bernoulli</td></tr>
+      <tr><td>Categorical CE</td><td>−Σ yᵢ log ŷᵢ</td><td>Multiclass</td><td>MLE Categorical</td></tr>
+      <tr><td>MSE</td><td>(1/n)Σ(y − ŷ)²</td><td>Regression</td><td>MLE Gaussian</td></tr>
+      <tr><td>MAE</td><td>(1/n)Σ|y − ŷ|</td><td>Robust regress.</td><td>MLE Laplace</td></tr>
+      <tr><td>Huber</td><td>L₂ for small errors, L₁ for large</td><td>Robust</td><td>Mixed</td></tr>
+      <tr><td>KL Divergence</td><td>Σ p log(p/q)</td><td>VAE, distillation</td><td>Info theory</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 8: NUMERICAL METHODS -->
+<!-- ════════════════════════════════════════════ -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>Numerical Methods & Tricks</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Numerical Stability</h3>
+    <div class="formula-box">
+      Softmax (numerically stable):<br>
+        softmax(x)ᵢ = e^(xᵢ − max(x)) / Σⱼ e^(xⱼ − max(x))<br>
+      <br>
+      Log-Sum-Exp:<br>
+        log Σ eˣⁱ = c + log Σ e^(xᵢ−c),  c = max(x)<br>
+      <br>
+      Avoid: log(0), division by 0 → add ε = 1e-8
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Matrix Decompositions Summary</h3>
+    <table>
+      <tr><th>Decomposition</th><th>Form</th><th>Use in AI</th></tr>
+      <tr><td>LU</td><td>A = LU</td><td>Solving linear systems</td></tr>
+      <tr><td>QR</td><td>A = QR</td><td>Least squares, Gram-Schmidt</td></tr>
+      <tr><td>Cholesky</td><td>A = LLᵀ (PD only)</td><td>Sampling from Gaussian</td></tr>
+      <tr><td>Eigendecomp</td><td>A = QΛQ⁻¹</td><td>PCA, spectral clustering</td></tr>
+      <tr><td>SVD</td><td>A = UΣVᵀ</td><td>Recommender, NLP, compression</td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>Key Inequalities for ML Theory</h3>
+    <div class="formula-box">
+      Cauchy-Schwarz:  |⟨u,v⟩| ≤ ‖u‖ · ‖v‖<br>
+      Jensen's:        f(E[X]) ≤ E[f(X)]  for convex f<br>
+                       Used to derive ELBO in VAEs<br>
+      AM-GM:           (a+b)/2 ≥ √(ab)<br>
+      Triangle:        ‖x + y‖ ≤ ‖x‖ + ‖y‖
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Computational Complexity Reference</h3>
+    <table>
+      <tr><th>Operation</th><th>Complexity</th><th>Notes</th></tr>
+      <tr><td>Matrix mult A(m×n) · B(n×p)</td><td>O(mnp)</td><td>O(n³) for square</td></tr>
+      <tr><td>Matrix inverse n×n</td><td>O(n³)</td><td>Use LU instead</td></tr>
+      <tr><td>SVD m×n</td><td>O(min(m,n)·mn)</td><td>Truncated SVD faster</td></tr>
+      <tr><td>Self-attention (seq len n)</td><td>O(n²d)</td><td>Quadratic in seq length</td></tr>
+      <tr><td>Gradient backprop</td><td>O(2 × forward)</td><td>Constant factor overhead</td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>Quick Reference: Common Gradients</h3>
+    <div class="formula-box">
+      ∂/∂W [Wx + b] = xᵀ<br>
+      ∂/∂x [Wx + b] = Wᵀ<br>
+      ∂/∂x [xᵀAx] = (A + Aᵀ)x  →  2Ax if A symmetric<br>
+      ∂/∂x [aᵀx] = a<br>
+      ∂/∂A [tr(AB)] = Bᵀ<br>
+      ∂/∂A [log det A] = A⁻ᵀ<br>
+      ∂/∂x [‖x‖₂²] = 2x<br>
+      ∂/∂x [‖Ax − b‖₂²] = 2Aᵀ(Ax − b)
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Math for AI Engineers &nbsp;·&nbsp; <span>Sameeksha</span> &nbsp;·&nbsp; Complete Reference Notes &nbsp;·&nbsp; All Rights Reserved
+</footer>
+
+</body>
+</html>
